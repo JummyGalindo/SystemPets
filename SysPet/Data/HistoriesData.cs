@@ -63,8 +63,8 @@ namespace SysPet.Data
                           FROM [dbo].[Historiales] h
                           INNER JOIN Pacientes p on p.IdPaciente = h.IdPaciente
                           INNER JOIN Personas ps on ps.IdPersona = p.IdPersona
-                          INNER JOINT Usuarios u on u.Id = h.IdUser
-                          WHERE p.Estado = 1 AND ps.Estado = 1 AND u.IdUser = @userId";
+                          INNER JOIN Usuarios u on u.Id = h.IdUser
+                          WHERE p.Estado = 1 AND ps.Estado = 1 AND u.Id = @userId";
 
                 return await GetItems(sql, new { userId });
             }

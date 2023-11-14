@@ -114,8 +114,8 @@ namespace SysPet.Data
 	                            I.IdPersona,
 	                            I.IdDoctor
                             FROM [dbo].[Internamientos] I
-                            INNER JOIN Pacientes a ON a.IdPaciente = I.IdPaciente WHERE a.Estado = 1
-                            INNER JOIN Usuarios u on u.Id = I.IdUser AND u.Estado = 1";
+                            INNER JOIN Pacientes a ON a.IdPaciente = I.IdPaciente 
+                            INNER JOIN Usuarios u on u.Id = I.IdUser AND u.Estado = 1 WHERE a.Estado = 1";
 
                 var internments = await GetItems(sql, new { userId });
                 var persons = new List<InternamientosViewModel>();
