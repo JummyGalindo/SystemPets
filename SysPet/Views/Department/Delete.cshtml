@@ -31,18 +31,28 @@
                         <dd class="col-sm-8">
                             @Html.DisplayFor(model => model.Descripcion)
                         </dd>
-                        <dt class="col-sm-4">
-                            @Html.DisplayNameFor(model => model.Estado)
-                        </dt>
-                        <dd class="col-sm-8">
-                            @Html.DisplayFor(model => model.Estado)
-                        </dd>
+                        
                         <dt class="col-sm-4">
                             @Html.DisplayNameFor(model => model.Fecha)
                         </dt>
                         <dd class="col-sm-8">
                             @Html.DisplayFor(model => model.Fecha)
                         </dd>
+                        <dt class="col-sm-6">
+                            @Html.DisplayNameFor(model => model.Estado)
+                        </dt>
+                        @if (Model.State.Equals("Activo"))
+                        {
+                            <dd class="col-sm-6 badge-custom-success">
+                                @Html.DisplayFor(model => Model.State)
+                            </dd>
+                        }
+                        @if (Model.State.Equals("Inactivo"))
+                        {
+                            <dd class="col-sm-6 badge-custom-danger">
+                                @Html.DisplayFor(model => Model.State)
+                            </dd>
+                        }
                     </dl>
                 </div>
                 <div class="modal-footer">

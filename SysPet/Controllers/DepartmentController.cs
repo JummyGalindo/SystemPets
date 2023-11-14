@@ -6,6 +6,7 @@ using SysPet.Models;
 namespace SysPet.Controllers
 {
     [ServiceFilter(typeof(ManageExceptionFilter))]
+    [TypeFilter(typeof(RoleAuthorizationFilter), Arguments = new object[] { "Administrador" })]
     public class DepartmentController : Controller
     {
         private readonly DepartmentsData data;

@@ -4,6 +4,7 @@ using SysPet.Data;
 using SysPet.Exception;
 using SysPet.Extensions;
 using SysPet.Models;
+using SysPet.Services;
 using System.Reflection;
 
 namespace SysPet.Controllers
@@ -13,10 +14,15 @@ namespace SysPet.Controllers
     {
         private readonly PersonsData data;
         private readonly CostumerDetailData costumerDetailData;
-        public PersonController()
+        private readonly UsersData usersData;
+        private readonly IUserIdProvider _userIdProvider;
+        public PersonController(IUserIdProvider userIdProvider)
         {
             data = new PersonsData();
             costumerDetailData = new CostumerDetailData();
+            _userIdProvider = userIdProvider;
+            usersData = new UsersData();
+
         }
 
         // GET: PersonController
@@ -25,7 +31,23 @@ namespace SysPet.Controllers
             try
             {
                 ViewBag.Url = "Shared/EmptyData";
-                return View(await data.GetAll());
+                var userId = _userIdProvider.GetUserId();
+
+                var user = await usersData.GetItem(userId.Value);
+
+                
+                IEnumerable<PersonasViewModel> result;
+
+                if (user.Rol.Equals("Administrador"))
+                {
+                    result = await data.GetAll();
+                }
+                else
+                {
+                    result = await data.GetAll(userId);
+                }
+
+                return View(result);
 
             }
             catch (System.Exception)
@@ -97,7 +119,7 @@ namespace SysPet.Controllers
             try
             {
                 model.IdTipoPersona = 2;
-                //model.Telefono = model.PhoneNumber.ToString();
+                model.UserId = _userIdProvider.GetUserId();
                 var result = data.Create(model);
                 return RedirectToAction(nameof(Index));
             }
@@ -134,7 +156,7 @@ namespace SysPet.Controllers
             }
         }
 
-        
+        [TypeFilter(typeof(RoleAuthorizationFilter), Arguments = new object[] { "Administrador" })]
         public ActionResult Delete(int id)
         {
             try

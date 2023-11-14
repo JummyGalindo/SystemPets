@@ -6,7 +6,7 @@ namespace SysPet.Data
     {
         public override int Create(SalesViewModel item)
         {
-            var sql = $@"INSERT INTO Ventas VALUES('{FormatDate(item.FechaVenta)}',{item.CantidadArticulos}, {item.Total}) SELECT CAST(SCOPE_IDENTITY() as int)";
+            var sql = $@"INSERT INTO Ventas VALUES('{FormatDate(item.FechaVenta)}',{item.CantidadArticulos}, {item.Total}, {item.UserId}) SELECT CAST(SCOPE_IDENTITY() as int)";
             var result = ExecuteWithId(sql);
 
             foreach (var detalle in item.DetalleVenta)
@@ -46,6 +46,33 @@ namespace SysPet.Data
                           FROM [dbo].[Ventas] v
                           INNER JOIN [dbo].[DetalleVenta] d on d.IdVenta = v.Id
                           INNER JOIN [dbo].[Productos] p on p.IdProducto = d.IdProducto";
+
+                return await GetItems(sql);
+            }
+            catch
+            {
+                return new List<SalesViewModel>();
+            }
+        }
+
+        public async Task<IEnumerable<SalesViewModel>> GetAll(int? userId)
+        {
+            try
+            {
+                var sql = @$"SELECT v.[Id]
+                              ,v.[FechaVenta]
+                              ,v.[CantidadArticulos] TotalArticulos
+                              ,v.[Total] As TotalSale
+	                          ,d.[Descripcion]
+                              ,d.[Precio]
+                              ,d.[Cantidad]
+                              ,d.[Total] TotalItem
+	                          ,p.Nombre Articulo
+                              ,p.[Imagen], p.[TipoContenido]
+                          FROM [dbo].[Ventas] v
+                          INNER JOIN [dbo].[DetalleVenta] d on d.IdVenta = v.Id
+                          INNER JOIN [dbo].[Productos] p on p.IdProducto = d.IdProducto
+                          INNER JOIN [dbo].[Usuarios] u on u.Id = v.IdUser AND u.Estado = 1";
 
                 return await GetItems(sql);
             }

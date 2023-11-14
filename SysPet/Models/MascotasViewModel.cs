@@ -62,5 +62,6 @@ namespace SysPet.Models
         {
             FileName = Image!= null ? Image.FileName : "";
         }
+        public int? UserId { get; set; }
     }
 }

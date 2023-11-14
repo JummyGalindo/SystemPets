@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using SysPet.Data;
 using SysPet.Exception;
 using SysPet.Models;
+using SysPet.Services;
 
 namespace SysPet.Controllers
 {
@@ -11,10 +12,14 @@ namespace SysPet.Controllers
     {
         private readonly HistoriesData data;
         private readonly PetsData petsData;
-        public HistoryController() 
+        private readonly UsersData usersData;
+        private readonly IUserIdProvider _userIdProvider;
+        public HistoryController(IUserIdProvider userIdProvider) 
         {
             data = new HistoriesData();
             petsData = new PetsData();
+            _userIdProvider = userIdProvider;
+            usersData = new UsersData();
         }
 
         // GET: HistoryController
@@ -23,7 +28,22 @@ namespace SysPet.Controllers
             try
             {
                 ViewBag.Url = "Shared/EmptyData";
-                return View(await data.GetAll());
+                var userId = _userIdProvider.GetUserId();
+
+                var user = await usersData.GetItem(userId.Value);
+
+                IEnumerable<HistorialesViewModel> result;
+
+                if (user.Rol.Equals("Administrador"))
+                {
+                    result = await data.GetAll();
+                }
+                else
+                {
+                    result = await data.GetAll(userId);
+                }
+
+                return View(result);
 
             }
             catch (System.Exception)
@@ -68,7 +88,9 @@ namespace SysPet.Controllers
         {
             try
             {
+                model.UserId = _userIdProvider.GetUserId();
                 var result = data.Create(model);
+
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -103,6 +125,7 @@ namespace SysPet.Controllers
             }
         }
 
+        [TypeFilter(typeof(RoleAuthorizationFilter), Arguments = new object[] { "Administrador" })]
         public ActionResult Delete(int id)
         {
             try

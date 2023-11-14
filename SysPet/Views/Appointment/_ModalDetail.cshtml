@@ -42,14 +42,17 @@
                             @Html.DisplayFor(model => model.Estado)
                         </dd>
                     }
-                    else
+                    @if (Model.Estado.Equals("Reagendada"))
                     {
-                        @if (Model.Estado.Equals("Reagendada"))
-                        {
-                            <dd class="col-sm-6 badge-custom-info">
-                                @Html.DisplayFor(model => model.Estado)
-                            </dd>
-                        }
+                        <dd class="col-sm-6 badge-custom-info">
+                            @Html.DisplayFor(model => model.Estado)
+                        </dd>
+                    }
+                    @if (Model.Estado.Equals("vencida"))
+                    {
+                        <dd class="col-sm-6 badge-custom-danger">
+                            @Html.DisplayFor(model => model.Estado)
+                        </dd>
                     }
                 </dl>
             </div>

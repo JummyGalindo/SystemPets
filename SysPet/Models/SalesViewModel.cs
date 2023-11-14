@@ -43,5 +43,6 @@ namespace SysPet.Models
         {
             DetalleVenta = new List<SalesDetailViewModel>();
         }
+        public int? UserId { get; set; }
     }
 }

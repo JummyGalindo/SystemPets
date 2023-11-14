@@ -1,6 +1,7 @@
 using DinkToPdf;
 using DinkToPdf.Contracts;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using SysPet.Exception;
 using SysPet.Extensions;
@@ -22,6 +23,8 @@ builder.Services.AddScoped<IPdfService<InternamientosViewModel>, PdfService>();
 builder.Services.AddScoped<ManageExceptionFilter>();
 builder.Services.AddScoped<ToastrService>();
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IUserIdProvider, SessionUserIdProvider>();
 builder.Services.AddScoped(provider =>
 {
     return new RoleAuthorizationFilter("Administrador");

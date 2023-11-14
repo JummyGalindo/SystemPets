@@ -54,5 +54,6 @@ namespace SysPet.Models
         public int IdTipoPersona { get; set; }
         public List<MascotasViewModel> Mascotas { get; set; }
         public UsuariosViewModel Usuario { get; set; }
+        public int? UserId { get; set; }
     }
 }

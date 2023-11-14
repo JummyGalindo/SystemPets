@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SysPet.Data;
 using SysPet.Exception;
 using SysPet.Models;
+using SysPet.Services;
 
 namespace SysPet.Controllers
 {
@@ -10,9 +11,12 @@ namespace SysPet.Controllers
     public class DoctorController : Controller
     {
         private readonly PersonsData data;
-        public DoctorController()
+        private readonly IUserIdProvider _userIdProvider;
+
+        public DoctorController(IUserIdProvider userIdProvider)
         {
             data = new PersonsData();
+            _userIdProvider = userIdProvider;
         }
 
         // GET: DoctorController
@@ -21,7 +25,9 @@ namespace SysPet.Controllers
             try
             {
                 ViewBag.Url = "Shared/EmptyData";
+                var userId = _userIdProvider.GetUserId();
                 var tipoPersonaDoctor = 3;
+                
                 return View(await data.GetAll(tipoPersonaDoctor));
 
             }
@@ -58,6 +64,7 @@ namespace SysPet.Controllers
             try
             {
                 model.IdTipoPersona = 3;
+                model.UserId = _userIdProvider.GetUserId();
                 var result = data.Create(model);
                 return RedirectToAction(nameof(Index));
             }
@@ -68,6 +75,7 @@ namespace SysPet.Controllers
         }
 
         // GET: DoctorController/Edit/5
+        [TypeFilter(typeof(RoleAuthorizationFilter), Arguments = new object[] { "Administrador" })]
         public async Task<ActionResult> Edit(int id)
         {
             return View(await data.GetItem(id));
@@ -76,6 +84,7 @@ namespace SysPet.Controllers
         // POST: DoctorController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [TypeFilter(typeof(RoleAuthorizationFilter), Arguments = new object[] { "Administrador" })]
         public ActionResult Edit(int id, PersonasViewModel model)
         {
             try
@@ -94,6 +103,7 @@ namespace SysPet.Controllers
             }
         }
 
+        [TypeFilter(typeof(RoleAuthorizationFilter), Arguments = new object[] { "Administrador" })]
         public ActionResult Delete(int id)
         {
             try

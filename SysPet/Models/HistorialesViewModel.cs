@@ -18,5 +18,6 @@ namespace SysPet.Models
         public byte[] Imagen { get; set; }
         public string TipoContenido { get; set; }
         public List<SelectListItem> Pacientes { get; set; }
+        public int? UserId { get; set; }
     }
 }

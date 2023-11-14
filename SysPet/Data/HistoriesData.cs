@@ -10,7 +10,8 @@ namespace SysPet.Data
                         '{FormatDate(item.FechaVisita)}', 
                         '{item.Motivo}', 
                         '{item.Diagnostico}', 
-                         {item.IdPaciente})";
+                         {item.IdPaciente},
+                         {item.UserId})";
 
             return Execute(sql);
         }
@@ -40,6 +41,32 @@ namespace SysPet.Data
                           WHERE p.Estado = 1 AND ps.Estado = 1";
 
                 return await GetItems(sql);
+            }
+            catch
+            {
+                return new List<HistorialesViewModel>();
+            }
+        }
+
+        public async Task<IEnumerable<HistorialesViewModel>> GetAll(int? userId)
+        {
+            try
+            {
+                var sql = @$"SELECT h.[Id]
+                              ,h.[FechaVisita]
+                              ,h.[Motivo]
+                              ,h.[Diagnostico]
+                              ,p.[Nombre] Paciente
+                              ,p.[Imagen]
+                              ,p.[TipoContenido]
+	                          ,ps.Nombre + ' ' + ps.ApellidoPaterno + ' ' + ApellidoMaterno AS FullName
+                          FROM [dbo].[Historiales] h
+                          INNER JOIN Pacientes p on p.IdPaciente = h.IdPaciente
+                          INNER JOIN Personas ps on ps.IdPersona = p.IdPersona
+                          INNER JOINT Usuarios u on u.Id = h.IdUser
+                          WHERE p.Estado = 1 AND ps.Estado = 1 AND u.IdUser = @userId";
+
+                return await GetItems(sql, new { userId });
             }
             catch
             {

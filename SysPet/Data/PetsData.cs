@@ -6,13 +6,13 @@ namespace SysPet.Data
     {
         public override int Create(MascotasViewModel item)
         {
-            var query = $@"INSERT INTO Pacientes (Nombre,Raza,Especie,Sexo,Edad,Color,Peso,Estado,Fecha,IdPersona,Imagen,NombreArchivo,TipoContenido)
-                        VALUES(@Nombre,@Raza,@Especie,@Sexo,@Edad,@Color,@Peso,@Estado,@Fecha,@IdPersona,@Imagen,@NombreArchivo,@TipoContenido)";
+            var query = $@"INSERT INTO Pacientes (Nombre,Raza,Especie,Sexo,Edad,Color,Peso,Estado,Fecha,IdPersona,Imagen,NombreArchivo,TipoContenido, IdUser)
+                        VALUES(@Nombre,@Raza,@Especie,@Sexo,@Edad,@Color,@Peso,@Estado,@Fecha,@IdPersona,@Imagen,@NombreArchivo,@TipoContenido,@UserId)";
             var estado = 1;
             var fecha = FormatDate(DateTime.Now.Date);
             var parameters = new
             {
-                item.Nombre, item.Raza, item.Especie, item.Sexo,item.Edad,item.Color,item.Peso,Estado = estado,Fecha = fecha, item.IdPersona,item.Imagen,item.NombreArchivo,item.TipoContenido
+                item.Nombre, item.Raza, item.Especie, item.Sexo,item.Edad,item.Color,item.Peso,Estado = estado,Fecha = fecha, item.IdPersona,item.Imagen,item.NombreArchivo,item.TipoContenido, item.UserId
             };
 
             return Execute(query, parameters);
@@ -48,6 +48,37 @@ namespace SysPet.Data
                           WHERE p.Estado = 1 AND a.Estado = 1";
 
                 return await GetItems(sql);
+            }
+            catch
+            {
+                return new List<MascotasViewModel>();
+            }
+        }
+
+        public async Task<IEnumerable<MascotasViewModel>> GetAll(int? userId)
+        {
+            try
+            {
+                var sql = @$"SELECT p.[IdPaciente]
+                              ,p.[Nombre]
+                              ,p.[Raza]
+                              ,p.[Especie]
+                              ,p.[Sexo]
+                              ,p.[Edad]
+                              ,p.[Color]
+                              ,p.[Peso]
+                              ,p.[Estado]
+                              ,p.[Fecha]
+                              ,a.Nombre Propietario
+	                          ,a.ApellidoPaterno
+                              ,a.ApellidoMaterno
+                              ,p.Imagen
+                          FROM [dbo].[Pacientes] p
+                          INNER JOIN [dbo].[Personas] a on a.IdPersona = p.IdPersona
+                          INNER JOIN [dbo].[Usuarios] u on u.Id = p.IdUser
+                          WHERE p.Estado = 1 AND a.Estado = 1 AND u.Id = @userId AND u.Estado = 1";
+
+                return await GetItems(sql, new { userId });
             }
             catch
             {

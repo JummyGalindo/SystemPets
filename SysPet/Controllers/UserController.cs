@@ -7,13 +7,14 @@ using SysPet.Data;
 using SysPet.Exception;
 using SysPet.Models;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 
 namespace SysPet.Controllers
 {
     [ServiceFilter(typeof(ManageExceptionFilter))]
+    
     public class UserController : Controller
     {
-        
 
         private readonly UsersData _usersData;
         public UserController()
@@ -83,6 +84,7 @@ namespace SysPet.Controllers
                 {
                     new Claim(ClaimTypes.Name, user.Nombre), // Nombre de usuario
                     new Claim(ClaimTypes.Role, userRol), // Rol del usuario
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
                 };
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -90,6 +92,7 @@ namespace SysPet.Controllers
                 {
                     IsPersistent = true,
                     ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
+                    
                 };
                 try
                 {
@@ -107,7 +110,6 @@ namespace SysPet.Controllers
 
                 HttpContext.Session.SetString("User", user.Nombre);
                 HttpContext.Session.SetInt32("UserId", user.Id);
-                
 
                 return RedirectToAction("Index", "Home");
             }
@@ -143,6 +145,7 @@ namespace SysPet.Controllers
         }
 
         // GET: UserController/Create
+        [TypeFilter(typeof(RoleAuthorizationFilter), Arguments = new object[] { "Administrador" })]
         public async Task<ActionResult> Create()
         {
             var model = new UsuariosViewModel();
@@ -161,6 +164,7 @@ namespace SysPet.Controllers
         // POST: UserController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [TypeFilter(typeof(RoleAuthorizationFilter), Arguments = new object[] { "Administrador" })]
         public ActionResult Create(UsuariosViewModel model)
         {
             try
@@ -215,6 +219,7 @@ namespace SysPet.Controllers
         // POST: UserController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [TypeFilter(typeof(RoleAuthorizationFilter), Arguments = new object[] { "Administrador" })]
         public async Task<ActionResult> Edit(int id, UsuariosViewModel model)
         {
             try
@@ -243,6 +248,7 @@ namespace SysPet.Controllers
         // POST: UserController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [TypeFilter(typeof(RoleAuthorizationFilter), Arguments = new object[] { "Administrador" })]
         public ActionResult Delete(int id, UsuariosViewModel model)
         {
             try

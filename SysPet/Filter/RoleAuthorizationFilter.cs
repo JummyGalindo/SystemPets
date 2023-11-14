@@ -16,7 +16,9 @@ public class RoleAuthorizationFilter : IAuthorizationFilter
         var user = context.HttpContext.User;
         if (user.HasClaim(c => c.Type == ClaimTypes.Role && c.Value == _requiredRole))
         {
-            // El usuario tiene el rol requerido
+            //var userId = user.Identity.Name;
+            //var role = user.Claims.Select(x => x.Type == ClaimTypes.Role);
+            //context.HttpContext.Session.SetString("UserId", userId);
         }
         else
         {

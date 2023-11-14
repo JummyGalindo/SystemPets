@@ -16,6 +16,9 @@
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-outline mb-4">
                         <label asp-for="FechaCita" class="control-label col-md-6"></label>
+                        @* Otro modelo de fecha diferente al de bootstrp con flatpickr *@
+
+                        @* @Html.EditorFor(model => model.FechaCita, new { htmlAttributes = new { @class = "form-control-lg", type = "datetime", id = "date", placeholder = "Selecciona la fecha y hora" } }) *@
                         <input asp-for="FechaCita" class="form-control form-control-lg" />
                         <span asp-validation-for="FechaCita" class="text-danger"></span>
                     </div>
@@ -64,4 +67,5 @@ catch (Exception ex)
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
 }

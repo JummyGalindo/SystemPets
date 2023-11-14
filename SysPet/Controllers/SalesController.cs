@@ -5,6 +5,7 @@ using Rotativa.AspNetCore;
 using SysPet.Data;
 using SysPet.Exception;
 using SysPet.Models;
+using SysPet.Services;
 using System.Reflection;
 
 namespace SysPet.Controllers
@@ -14,11 +15,15 @@ namespace SysPet.Controllers
     {
         private readonly SalesData salesData;
         private readonly ProductsData productsData;
+        private readonly UsersData usersData;
+        private readonly IUserIdProvider _userIdProvider;
 
-        public SalesController()
+        public SalesController(IUserIdProvider userIdProvider)
         {
             salesData = new SalesData();
             productsData = new ProductsData();
+            _userIdProvider = userIdProvider;
+            usersData = new UsersData();    
         }
 
         public async Task<ActionResult> Index()
@@ -32,7 +37,21 @@ namespace SysPet.Controllers
                 var salesList = new List<SalesViewModel>();
 
 				ViewBag.Url = "Shared/EmptyData";
-                var result = await salesData.GetAll();
+                var userId = _userIdProvider.GetUserId();
+
+                var user = await usersData.GetItem(userId.Value);
+
+                IEnumerable<SalesViewModel> result;
+
+                if (user.Rol.Equals("Administrador"))
+                {
+                    result = await salesData.GetAll();
+                }
+                else
+                {
+                    result = await salesData.GetAll(userId);
+                }
+
 
                 var headers = result.Select(x => new SalesViewModel
                 {
@@ -287,6 +306,7 @@ namespace SysPet.Controllers
                 var updated = productsData.UpdateStock(productsToUpdate);
 
                 model.DetalleVenta = finalList.ToList();
+                model.UserId = _userIdProvider.GetUserId();
 
                 var result = salesData.Create(model);
                 return RedirectToAction(nameof(Index));
@@ -324,6 +344,7 @@ namespace SysPet.Controllers
             }
         }
 
+        [TypeFilter(typeof(RoleAuthorizationFilter), Arguments = new object[] { "Administrador" })]
         public ActionResult Delete(int id)
         {
             try

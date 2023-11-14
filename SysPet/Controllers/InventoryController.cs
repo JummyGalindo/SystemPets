@@ -106,7 +106,7 @@ namespace SysPet.Controllers
             }
         }
 
-        
+        [TypeFilter(typeof(RoleAuthorizationFilter), Arguments = new object[] { "Administrador" })]
         public ActionResult Delete(int id)
         {
             try

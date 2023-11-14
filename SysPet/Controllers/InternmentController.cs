@@ -19,15 +19,20 @@ namespace SysPet.Controllers
         private readonly InternmentsData data;
         private readonly PersonsData personsData;
         private readonly PetsData petsData;
+        private readonly UsersData usersData;
         private readonly IConverter converter;
         private readonly IPdfService<InternamientosViewModel> _pdfService;
-        public InternmentController(IConverter converter, IPdfService<InternamientosViewModel> pdfService)
+        private readonly IUserIdProvider _userIdProvider;
+        public InternmentController(IConverter converter, IPdfService<InternamientosViewModel> pdfService, IUserIdProvider userIdProvider)
         {
             data = new InternmentsData();
             personsData = new PersonsData();
             petsData = new PetsData();
             this.converter = converter;
             _pdfService = pdfService;
+            _userIdProvider = userIdProvider;
+            usersData = new UsersData();
+
         }
 
         public IActionResult ShowPdf()
@@ -134,7 +139,21 @@ namespace SysPet.Controllers
             try
             {
                 ViewBag.Url = "Shared/EmptyData";
-                return View(await data.GetAll());
+                var userId = _userIdProvider.GetUserId();
+                var user = await usersData.GetItem(userId.Value);
+
+                IEnumerable<InternamientosViewModel> result;
+
+                if (user.Rol.Equals("Administrador"))
+                {
+                    result = await data.GetAll();
+                }
+                else
+                {
+                    result = await data.GetAll(userId);
+                }
+
+                return View(result);
 
             }
             catch (System.Exception)
@@ -219,6 +238,7 @@ namespace SysPet.Controllers
             {
                 var internment = await data.GetPersonId(model.IdPaciente);
                 model.IdPersona = internment.IdPersona;
+                model.UserId = _userIdProvider.GetUserId();
                 var resut = data.Create(model);
                 return RedirectToAction(nameof(Index));
             }
@@ -255,7 +275,7 @@ namespace SysPet.Controllers
             }
         }
 
-        
+        [TypeFilter(typeof(RoleAuthorizationFilter), Arguments = new object[] { "Administrador" })]
         public ActionResult Delete(int id)
         {
             try

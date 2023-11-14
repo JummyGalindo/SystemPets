@@ -9,6 +9,7 @@ namespace SysPet.Models
         public int Id { get; set; }
         [DisplayName("Fecha de Cita")]
         public DateTime FechaCita { get; set; } = DateTime.Now.Date;
+        public string AppointmentDate { get; set; }
         public string Motivo { get; set; }
         public int IdPersona { get; set; }
         public int IdEstado { get; set; }
@@ -29,6 +30,7 @@ namespace SysPet.Models
 
         public DateTime Fecha { get; set; }
         public int CantidadRegistros { get; set; }
+        public int? UserId { get; set; }
 
     }
 }

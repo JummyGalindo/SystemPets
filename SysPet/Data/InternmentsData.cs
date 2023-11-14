@@ -13,7 +13,8 @@ namespace SysPet.Data
                 '{item.Tratamiento}',1,
                  {item.IdPaciente}, 
                  {item.IdPersona}, 
-                 {item.IdDoctor})";
+                 {item.IdDoctor},
+                 {item.UserId})";
 
             return Execute(sql);
         }
@@ -67,6 +68,56 @@ namespace SysPet.Data
                             INNER JOIN Pacientes a ON a.IdPaciente = I.IdPaciente WHERE a.Estado = 1";
 
                 var internments =  await GetItems(sql);
+                var persons = new List<InternamientosViewModel>();
+                foreach (var item in internments)
+                {
+                    sql = @$"select IdPersona, Nombre + ' ' + ApellidoPaterno + ' ' + ApellidoMaterno AS FullName from Personas where IdPersona in (@idPersona, @idDoctor)";
+
+                    var result = await GetItems(sql, new { idPersona = item.IdPersona, idDoctor = item.IdDoctor });
+                    foreach (var person in result)
+                    {
+                        if (item.IdPersona == person.IdPersona)
+                        {
+                            item.Propietario = person.FullName;
+                        }
+                        if (item.IdDoctor == person.IdPersona)
+                        {
+                            item.Atendio = person.FullName;
+                        }
+                    }
+                    persons.AddRange(result);
+                }
+
+                return internments;
+
+            }
+            catch
+            {
+                return new List<InternamientosViewModel>();
+            }
+        }
+
+        public async Task<IEnumerable<InternamientosViewModel>> GetAll(int? userId)
+        {
+            try
+            {
+                var sql = @$"SELECT
+                                I.[Id],
+                                I.[FechaIngreso],
+                                I.[Medicamento],
+                                I.[Antecedentes],
+                                I.[Tratamiento],
+                                I.[Estado],
+                                a.Nombre AS Paciente,
+                                a.[Imagen],
+                                a.[TipoContenido],
+	                            I.IdPersona,
+	                            I.IdDoctor
+                            FROM [dbo].[Internamientos] I
+                            INNER JOIN Pacientes a ON a.IdPaciente = I.IdPaciente WHERE a.Estado = 1
+                            INNER JOIN Usuarios u on u.Id = I.IdUser AND u.Estado = 1";
+
+                var internments = await GetItems(sql, new { userId });
                 var persons = new List<InternamientosViewModel>();
                 foreach (var item in internments)
                 {

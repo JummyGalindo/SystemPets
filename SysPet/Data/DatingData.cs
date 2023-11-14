@@ -12,7 +12,7 @@ namespace SysPet.Data
                         '{FormatDateTime(item.FechaCita)}', 
                         '{item.Motivo}', 
                           {item.IdPersona},
-                           {getEstado})";
+                           {getEstado}, {item.UserId})";
 
             return Execute(sql);
         }
@@ -34,6 +34,25 @@ namespace SysPet.Data
                               INNER JOIN [dbo].[EstadoCitas] e on e.Id = c.IdEstado AND p.Estado = 1";
 
                 return await GetItems(sql);
+            }
+            catch
+            {
+                return new List<CitasViewModel>();
+            }
+        }
+
+        public async Task<IEnumerable<CitasViewModel>> GetAll(int? userId)
+        {
+            try
+            {
+                var sql = @$"SELECT c.[Id],c.[FechaCita],c.[Motivo],p.[Nombre],p.[ApellidoPaterno],p.[ApellidoMaterno], e.[Nombre] Estado
+                              FROM [dbo].[Citas] c
+                              INNER JOIN [dbo].[Personas] p on p.IdPersona = c.IdPersona
+                              INNER JOIN [dbo].[EstadoCitas] e on e.Id = c.IdEstado AND p.Estado = 1
+                              INNER JOIN [dbo].[Usuarios] a on a.Id = c.IdUser AND a.Estado = 1
+                              WHERE a.Id = @userId";
+
+                return await GetItems(sql, new { userId });
             }
             catch
             {
@@ -81,7 +100,8 @@ namespace SysPet.Data
                           FROM [dbo].[Citas] c
                           INNER JOIN [dbo].[Personas] p on p.IdPersona = c.IdPersona
                           INNER JOIN [dbo].[EstadoCitas] e on e.Id = c.IdEstado
-                          WHERE c.Id = @id AND p.Estado = 1";
+                          INNER JOIN [dbo].[Usuarios] a on a.Id = c.IdUser 
+                          WHERE c.Id = @id AND p.Estado = 1 AND a.Estado = 1";
 
             return await Get(sql, new { id });
         }

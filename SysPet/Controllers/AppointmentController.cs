@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SysPet.Data;
@@ -15,12 +16,18 @@ namespace SysPet.Controllers
     {
         private readonly DatingData data;
         private readonly PersonsData personsData;
+        private readonly UsersData _usersData;
         private readonly ToastrService _toastrService;
-        public AppointmentController(ToastrService toastrService)
+        private readonly IUserIdProvider _userIdProvider;
+
+
+        public AppointmentController(ToastrService toastrService, IUserIdProvider userIdProvider)
         {
             data = new DatingData();
             personsData = new PersonsData();
             _toastrService = toastrService;
+            _userIdProvider = userIdProvider;
+            _usersData = new UsersData();
         }
         // GET: AppointmentController
         public async Task<ActionResult> Index()
@@ -29,7 +36,20 @@ namespace SysPet.Controllers
             {
                 ViewBag.Url = "Shared/EmptyData";
 
-                var result = await data.GetAll();
+                var userId = _userIdProvider.GetUserId();
+
+                var user = await _usersData.GetItem(userId.Value);
+
+                IEnumerable<CitasViewModel> result;
+                
+                if (user.Rol.Equals("Administrador"))
+                {
+                    result = await data.GetAll();
+                }
+                else
+                {
+                    result = await data.GetAll(userId);
+                }
 
                 var expiredDate = DateTime.Now.AddHours(-2);
                 var dateToExpired = DateTime.Now.AddDays(2);
@@ -111,6 +131,8 @@ namespace SysPet.Controllers
         {
             try
             {
+                var userId = _userIdProvider.GetUserId();
+                model.UserId = userId;
                 var result = data.Create(model);
                 return RedirectToAction(nameof(Index));
             }
@@ -156,7 +178,7 @@ namespace SysPet.Controllers
             }
         }
 
-
+        [TypeFilter(typeof(RoleAuthorizationFilter), Arguments = new object[] { "Administrador" })]
         public ActionResult Delete(int id)
         {
             try

@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="~/css/sidebars.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SysPet.styles.css" asp-append-version="true" />
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
 
@@ -161,7 +162,20 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     
-    
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/flatpickr.min.js"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
+    <script>
+        const options = {
+            altInput: true,
+            minDate: "2022-01",
+            allowInput: true,
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            locale: "es"
+        }
+        flatpickr("#date", options);
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

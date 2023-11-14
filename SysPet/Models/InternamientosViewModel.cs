@@ -41,5 +41,6 @@ namespace SysPet.Models
 
         public DateTime Fecha { get; set; }
         public int CantidadRegistros { get; set; }
+        public int? UserId { get; set; }
     }
 }

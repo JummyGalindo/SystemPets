@@ -6,7 +6,9 @@ namespace SysPet.Data
     {
         public override int Create(PersonasViewModel item)
         {
-            var sql = $@"INSERT INTO Personas VALUES('{item.Nombre}','{item.ApellidoPaterno} {item.ApellidoMaterno}','{item.Direccion}','{item.Ciudad}','{item.CodigoPostal}','{item.Telefono}',1,{item.IdTipoPersona},'{item.ApellidoPaterno}', '{item.ApellidoMaterno}')";
+            var sql = $@"INSERT INTO Personas VALUES('{item.Nombre}','{item.ApellidoPaterno} {item.ApellidoMaterno}','{item.Direccion}',
+                            '{item.Ciudad}','{item.CodigoPostal}','{item.Telefono}',1,{item.IdTipoPersona},'{item.ApellidoPaterno}', 
+                            '{item.ApellidoMaterno}', {item.UserId})";
 
             return Execute(sql);
         }
@@ -43,6 +45,33 @@ namespace SysPet.Data
             }
         }
 
+        public async Task<IEnumerable<PersonasViewModel>> GetAll(int? userId)
+        {
+            try
+            {
+                var sql = @$"SELECT p.[IdPersona]
+                              ,p.[Nombre]
+                              ,p.[Apellidos]
+                              ,p.[ApellidoPaterno]
+                              ,p.[ApellidoMaterno]
+                              ,p.[Direccion]
+                              ,p.[Cuidad] Ciudad
+                              ,p.[CodigoPostal]
+                              ,p.[Telefono]
+                              ,p.[Estado]
+                          FROM [dbo].[Personas] p
+                          INNER JOIN [dbo].[Usuarios] u on u.Id = p.IdUser
+                          WHERE p.IdTipoPersona = 2 AND p.Estado = 1 AND u.Id = @userId ANd u.Estado = 1";
+
+                return await GetItems(sql, new { userId });
+            }
+            catch
+            {
+                return new List<PersonasViewModel>();
+            }
+        }
+
+
         public async Task<IEnumerable<PersonasViewModel>> GetAll(int idTipoPersona)
         {
             try
@@ -61,6 +90,32 @@ namespace SysPet.Data
                           WHERE IdTipoPersona = @idTipoPersona AND Estado = 1";
 
                 return await GetItems(sql, new { idTipoPersona });
+            }
+            catch
+            {
+                return new List<PersonasViewModel>();
+            }
+        }
+
+        public async Task<IEnumerable<PersonasViewModel>> GetAll(int idTipoPersona, int? userId)
+        {
+            try
+            {
+                var sql = @$"SELECT p.[IdPersona]
+                              ,p.[Nombre]
+                              ,p.[Apellidos]
+                              ,p.[ApellidoPaterno]
+                              ,p.[ApellidoMaterno]
+                              ,p.[Direccion]
+                              ,p.[Cuidad] Ciudad
+                              ,p.[CodigoPostal]
+                              ,p.[Telefono]
+                              ,p.[Estado]
+                          FROM [dbo].[Personas] p
+                          INNER JOIN [dbo].[Usuarios] u on u.Id = IdUser
+                          WHERE p.IdTipoPersona = @idTipoPersona AND p.Estado = 1 AND u.Id = @userId AND u.Estado = 1";
+
+                return await GetItems(sql, new { idTipoPersona, userId });
             }
             catch
             {
