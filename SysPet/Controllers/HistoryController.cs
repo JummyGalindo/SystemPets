@@ -8,6 +8,7 @@ using SysPet.Services;
 namespace SysPet.Controllers
 {
     [ServiceFilter(typeof(ManageExceptionFilter))]
+    [TypeFilter(typeof(AuthorizePermissionFilter), Arguments = new object[] { "Administrador" })]
     public class HistoryController : Controller
     {
         private readonly HistoriesData data;

@@ -1,13 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SysPet.Data;
 using SysPet.Exception;
 using SysPet.Models;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Identity;
 
 namespace SysPet.Controllers
 {
@@ -26,6 +24,16 @@ namespace SysPet.Controllers
         public IActionResult Singin()
         {
             return View();
+        }
+
+        public async Task<IActionResult> LogOut()
+        {
+            await HttpContext.SignOutAsync(
+                        CookieAuthenticationDefaults.AuthenticationScheme);
+
+            HttpContext.Session.Clear();
+
+            return RedirectToAction("LogIn", "User");
         }
 
         [HttpPost]
@@ -74,39 +82,27 @@ namespace SysPet.Controllers
                     return View(model);
                 }
 
-                var userRol = "Usuario";
-                if (user.IdRol == 1)
-                {
-                    userRol = "Administrador";
-                }
+                var rol = user.IdRol == 1 ? "Administrador" : "Usuario";
 
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, user.Nombre), // Nombre de usuario
-                    new Claim(ClaimTypes.Role, userRol), // Rol del usuario
+                    new Claim(ClaimTypes.Role, rol), // Rol del usuario
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
                 };
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var authProperties = new AuthenticationProperties
                 {
-                    IsPersistent = true,
-                    ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
-                    
+                    IsPersistent = false,
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(5),
+                    AllowRefresh = false,
                 };
-                try
-                {
-                    await HttpContext.SignInAsync(
+
+                await HttpContext.SignInAsync(
                         CookieAuthenticationDefaults.AuthenticationScheme,
                         new ClaimsPrincipal(claimsIdentity),
                         authProperties);
-                }
-                catch (System.Exception)
-                {
-
-                    throw;
-                }
-                
 
                 HttpContext.Session.SetString("User", user.Nombre);
                 HttpContext.Session.SetInt32("UserId", user.Id);

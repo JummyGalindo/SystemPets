@@ -7,6 +7,7 @@ using System.Diagnostics;
 namespace SysPet.Controllers
 {
     [ServiceFilter(typeof(ManageExceptionFilter))]
+    
     public class HomeController : Controller
     {
         private readonly SalesData _salesData;
@@ -157,7 +158,8 @@ namespace SysPet.Controllers
             return View(model);
         }
 
-
+        [TypeFilter(typeof(AuthorizePermissionFilter), Arguments = new object[] { "Administrador" })]
+        [TypeFilter(typeof(AuthorizePermissionFilter), Arguments = new object[] { "Usuario" })]
         public async Task<IActionResult> Index()
         {
             var user = HttpContext.Session.GetString("User");

@@ -10,6 +10,7 @@ using System.Reflection;
 namespace SysPet.Controllers
 {
     [ServiceFilter(typeof(ManageExceptionFilter))]
+    [TypeFilter(typeof(AuthorizePermissionFilter), Arguments = new object[] { "Administrador" })]
     public class PatientController : Controller
     {
         private readonly PetsData data;

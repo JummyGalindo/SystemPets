@@ -30,29 +30,52 @@ builder.Services.AddScoped(provider =>
     return new RoleAuthorizationFilter("Administrador");
 });
 
+builder.Services.AddScoped(provider =>
+{
+    return new AuthorizePermissionFilter("Administrador");
+});
+
+//builder.Services.AddScoped(provider =>
+//{
+//    return new AuthorizePermissionFilter("Usuario");
+//});
+
+
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminPolicy", policy =>
     {
         policy.RequireRole("Administrador");
     });
-    
+
 });
 
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-})
+//builder.Services.AddAuthentication(options =>
+//{
+//    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+//    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+//})
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
 {
-    options.LoginPath = new PathString("/User/Login");
+    options.LoginPath = new PathString("/User/LogIn");
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+    //options.LogoutPath = "/User/LogOut";
 });
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+    options.LoginPath = "/User/LogIn";
+    options.LogoutPath = "/User/LogOut";
+});
 
 builder.Services.AddSession(o =>
 {
-    o.IdleTimeout = TimeSpan.FromMinutes(20);
+    o.IdleTimeout = TimeSpan.FromMinutes(10);
+    o.Cookie.HttpOnly = true;
+    o.Cookie.SameSite = SameSiteMode.Strict; // O el valor adecuado para tus necesidades
+    o.Cookie.IsEssential = true;
 });
 
 

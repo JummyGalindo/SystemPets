@@ -10,6 +10,7 @@ using System.Reflection;
 namespace SysPet.Controllers
 {
     [ServiceFilter(typeof(ManageExceptionFilter))]
+    [TypeFilter(typeof(AuthorizePermissionFilter), Arguments = new object[] { "Administrador" })]
     public class PersonController : Controller
     {
         private readonly PersonsData data;
@@ -32,6 +33,10 @@ namespace SysPet.Controllers
             {
                 ViewBag.Url = "Shared/EmptyData";
                 var userId = _userIdProvider.GetUserId();
+                if (userId == null)
+                {
+                    return RedirectToAction("Login", "User");
+                }
 
                 var user = await usersData.GetItem(userId.Value);
 

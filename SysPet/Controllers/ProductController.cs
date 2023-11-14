@@ -8,6 +8,7 @@ namespace SysPet.Controllers
 {
     [ServiceFilter(typeof(ManageExceptionFilter))]
     [TypeFilter(typeof(RoleAuthorizationFilter), Arguments = new object[] { "Administrador" })]
+    [TypeFilter(typeof(AuthorizePermissionFilter), Arguments = new object[] { "Administrador" })]
     public class ProductController : Controller
     {
         private readonly ProductsData productsData;
