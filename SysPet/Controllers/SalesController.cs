@@ -11,7 +11,6 @@ using System.Reflection;
 namespace SysPet.Controllers
 {
     [ServiceFilter(typeof(ManageExceptionFilter))]
-    [TypeFilter(typeof(AuthorizePermissionFilter), Arguments = new object[] { "Administrador" })]
     public class SalesController : Controller
     {
         private readonly SalesData salesData;

@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using System.Data;
 using System.Data.SqlClient;
 
 namespace SysPet.Data
@@ -12,15 +11,7 @@ namespace SysPet.Data
         public Repository()
         {
             connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Pets;Integrated Security=True;Connect Timeout=30;Encrypt=False;";
-            connection = new SqlConnection(connectionString);
-            if (connection.State == ConnectionState.Open)
-            {
-                connection.Close();
-            }
-            else
-            {
-                connection.Open();
-            }
+            connection  = new SqlConnection(connectionString);
         }
 
         public async Task<IEnumerable<T>> QueryAsync<T>(string query)

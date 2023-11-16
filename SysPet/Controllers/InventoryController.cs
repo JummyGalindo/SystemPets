@@ -7,7 +7,6 @@ using SysPet.Models;
 namespace SysPet.Controllers
 {
     [ServiceFilter(typeof(ManageExceptionFilter))]
-    [TypeFilter(typeof(AuthorizePermissionFilter), Arguments = new object[] { "Administrador" })]
     public class InventoryController : Controller
     {
         private readonly InventoriesData data;

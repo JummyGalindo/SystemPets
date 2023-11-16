@@ -9,7 +9,7 @@ using SysPet.Services;
 namespace SysPet.Controllers
 {
     [ServiceFilter(typeof(ManageExceptionFilter))]
-    [TypeFilter(typeof(AuthorizePermissionFilter), Arguments = new object[] { "Administrador" })]
+    
     public class DoctorController : Controller
     {
         private readonly PersonsData data;
