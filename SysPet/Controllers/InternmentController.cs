@@ -10,6 +10,7 @@ using SysPet.Exception;
 using Rotativa.AspNetCore;
 using SysPet.Services;
 using System.Reflection;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SysPet.Controllers
 {
@@ -275,7 +276,7 @@ namespace SysPet.Controllers
             }
         }
 
-        [TypeFilter(typeof(RoleAuthorizationFilter), Arguments = new object[] { "Administrador" })]
+        [Authorize(Roles = "Administrador")]
         public ActionResult Delete(int id)
         {
             try

@@ -77,7 +77,7 @@ namespace SysPet.Controllers
         }
 
         // GET: DoctorController/Edit/5
-        [TypeFilter(typeof(RoleAuthorizationFilter), Arguments = new object[] { "Administrador" })]
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult> Edit(int id)
         {
             return View(await data.GetItem(id));
@@ -86,7 +86,7 @@ namespace SysPet.Controllers
         // POST: DoctorController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [TypeFilter(typeof(RoleAuthorizationFilter), Arguments = new object[] { "Administrador" })]
+        [Authorize(Roles = "Administrador")]
         public ActionResult Edit(int id, PersonasViewModel model)
         {
             try
@@ -105,7 +105,7 @@ namespace SysPet.Controllers
             }
         }
 
-        [TypeFilter(typeof(RoleAuthorizationFilter), Arguments = new object[] { "Administrador" })]
+        [Authorize(Roles = "Administrador")]
         public ActionResult Delete(int id)
         {
             try

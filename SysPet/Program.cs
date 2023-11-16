@@ -23,25 +23,26 @@ builder.Services.AddScoped<ToastrService>();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserIdProvider, SessionUserIdProvider>();
-builder.Services.AddScoped(provider =>
-{
-    return new RoleAuthorizationFilter("Administrador");
-});
+//builder.Services.AddScoped(provider =>
+//{
+//    return new RoleAuthorizationFilter("Administrador");
+//});
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("AdminPolicy", policy =>
-    {
-        policy.RequireRole("Administrador");
-    });
+//builder.Services.AddAuthorization(options =>
+//{
+//    options.AddPolicy("AdminPolicy", policy =>
+//    {
+//        policy.RequireRole("Administrador");
+//    });
 
-});
+//});
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
 {
-    options.LoginPath = "/User/Login";
+    options.LoginPath = "/User/LogIn";
     options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+    options.AccessDeniedPath = "/Home/Privacy";
 });
 
 builder.Services.AddSession(o =>
@@ -63,13 +64,13 @@ if (!app.Environment.IsDevelopment())
     app.UseStatusCodePagesWithReExecute("/Shared/CustomError/{0}");
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSession();
 app.UseRouting();
 
-app.UseAuthorization();
 app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",

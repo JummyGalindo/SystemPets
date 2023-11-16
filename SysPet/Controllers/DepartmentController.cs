@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SysPet.Data;
 using SysPet.Exception;
 using SysPet.Models;
@@ -6,6 +7,7 @@ using SysPet.Models;
 namespace SysPet.Controllers
 {
     [ServiceFilter(typeof(ManageExceptionFilter))]
+    [Authorize(Roles = "Administrador")]
     public class DepartmentController : Controller
     {
         private readonly DepartmentsData data;

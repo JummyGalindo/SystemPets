@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SysPet.Data;
 using SysPet.Exception;
 using SysPet.Models;
@@ -158,6 +159,7 @@ namespace SysPet.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Index()
         {
             var user = HttpContext.Session.GetString("User");

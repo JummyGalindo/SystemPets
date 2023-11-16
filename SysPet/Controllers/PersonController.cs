@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SysPet.Data;
 using SysPet.Exception;
@@ -160,7 +161,7 @@ namespace SysPet.Controllers
             }
         }
 
-        [TypeFilter(typeof(RoleAuthorizationFilter), Arguments = new object[] { "Administrador" })]
+        [Authorize(Roles = "Administrador")]
         public ActionResult Delete(int id)
         {
             try

@@ -6,6 +6,7 @@ using SysPet.Data;
 using SysPet.Exception;
 using SysPet.Models;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SysPet.Controllers
 {
@@ -141,7 +142,7 @@ namespace SysPet.Controllers
         }
 
         // GET: UserController/Create
-        [TypeFilter(typeof(RoleAuthorizationFilter), Arguments = new object[] { "Administrador" })]
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult> Create()
         {
             var model = new UsuariosViewModel();
@@ -160,7 +161,7 @@ namespace SysPet.Controllers
         // POST: UserController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [TypeFilter(typeof(RoleAuthorizationFilter), Arguments = new object[] { "Administrador" })]
+        [Authorize(Roles = "Administrador")]
         public ActionResult Create(UsuariosViewModel model)
         {
             try
@@ -204,8 +205,8 @@ namespace SysPet.Controllers
 
         // GET: UserController/Edit/5
         //[Authorize]
-        [TypeFilter(typeof(RoleAuthorizationFilter), Arguments = new object[] { "Administrador" })]
-        
+        [Authorize(Roles = "Administrador")]
+
         public async Task<ActionResult> Edit(int id)
         {
             var user = await _usersData.GetItem(id);
@@ -215,7 +216,7 @@ namespace SysPet.Controllers
         // POST: UserController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [TypeFilter(typeof(RoleAuthorizationFilter), Arguments = new object[] { "Administrador" })]
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult> Edit(int id, UsuariosViewModel model)
         {
             try
@@ -244,7 +245,7 @@ namespace SysPet.Controllers
         // POST: UserController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [TypeFilter(typeof(RoleAuthorizationFilter), Arguments = new object[] { "Administrador" })]
+        [Authorize(Roles = "Administrador")]
         public ActionResult Delete(int id, UsuariosViewModel model)
         {
             try
