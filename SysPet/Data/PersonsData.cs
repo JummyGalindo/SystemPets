@@ -34,7 +34,7 @@ namespace SysPet.Data
                               ,[CodigoPostal]
                               ,[Telefono]
                               ,[Estado]
-                          FROM [dbo].[Personas]
+                          FROM [dbo].[Personas] WITH (NOLOCK)
                           WHERE IdTipoPersona = 2 AND Estado = 1";
 
                 return await GetItems(sql);
@@ -59,8 +59,8 @@ namespace SysPet.Data
                               ,p.[CodigoPostal]
                               ,p.[Telefono]
                               ,p.[Estado]
-                          FROM [dbo].[Personas] p
-                          INNER JOIN [dbo].[Usuarios] u on u.Id = p.IdUser
+                          FROM [dbo].[Personas] p WITH (NOLOCK)
+                          INNER JOIN [dbo].[Usuarios] u WITH (NOLOCK) on u.Id = p.IdUser
                           WHERE p.IdTipoPersona = 2 AND p.Estado = 1 AND u.Id = @userId ANd u.Estado = 1";
 
                 return await GetItems(sql, new { userId });
@@ -86,7 +86,7 @@ namespace SysPet.Data
                               ,[CodigoPostal]
                               ,[Telefono]
                               ,[Estado]
-                          FROM [dbo].[Personas]
+                          FROM [dbo].[Personas] WITH (NOLOCK)
                           WHERE IdTipoPersona = @idTipoPersona AND Estado = 1";
 
                 return await GetItems(sql, new { idTipoPersona });
@@ -111,8 +111,8 @@ namespace SysPet.Data
                               ,p.[CodigoPostal]
                               ,p.[Telefono]
                               ,p.[Estado]
-                          FROM [dbo].[Personas] p
-                          INNER JOIN [dbo].[Usuarios] u on u.Id = IdUser
+                          FROM [dbo].[Personas] p WITH (NOLOCK)
+                          INNER JOIN [dbo].[Usuarios] u WITH (NOLOCK) ON u.Id = IdUser
                           WHERE p.IdTipoPersona = @idTipoPersona AND p.Estado = 1 AND u.Id = @userId AND u.Estado = 1";
 
                 return await GetItems(sql, new { idTipoPersona, userId });
@@ -135,7 +135,7 @@ namespace SysPet.Data
                               ,[CodigoPostal]
                               ,[Telefono]
                               ,[Estado]
-                          FROM [dbo].[Personas]
+                          FROM [dbo].[Personas] WITH (NOLOCK)
                           WHERE IdPersona = @id AND Estado = 1";
 
             return await Get(sql, new { id });

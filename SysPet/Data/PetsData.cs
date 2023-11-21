@@ -43,8 +43,8 @@ namespace SysPet.Data
 	                          ,a.ApellidoPaterno
                               ,a.ApellidoMaterno
                               ,p.Imagen
-                          FROM [dbo].[Pacientes] p
-                          INNER JOIN [dbo].[Personas] a on a.IdPersona = p.IdPersona
+                          FROM [dbo].[Pacientes] p WITH (NOLOCK)
+                          INNER JOIN [dbo].[Personas] a WITH (NOLOCK) on a.IdPersona = p.IdPersona
                           WHERE p.Estado = 1 AND a.Estado = 1";
 
                 return await GetItems(sql);
@@ -73,9 +73,9 @@ namespace SysPet.Data
 	                          ,a.ApellidoPaterno
                               ,a.ApellidoMaterno
                               ,p.Imagen
-                          FROM [dbo].[Pacientes] p
-                          INNER JOIN [dbo].[Personas] a on a.IdPersona = p.IdPersona
-                          INNER JOIN [dbo].[Usuarios] u on u.Id = p.IdUser
+                          FROM [dbo].[Pacientes] p WITH (NOLOCK)
+                          INNER JOIN [dbo].[Personas] a WITH (NOLOCK) on a.IdPersona = p.IdPersona
+                          INNER JOIN [dbo].[Usuarios] u WITH (NOLOCK) on u.Id = p.IdUser
                           WHERE p.Estado = 1 AND a.Estado = 1 AND u.Id = @userId AND u.Estado = 1";
 
                 return await GetItems(sql, new { userId });
@@ -103,8 +103,8 @@ namespace SysPet.Data
                               ,a.ApellidoMaterno
                               ,p.Imagen
                               ,p.NombreArchivo,p.TipoContenido
-                          FROM [dbo].[Pacientes] p
-                          INNER JOIN [dbo].[Personas] a on a.IdPersona = p.IdPersona
+                          FROM [dbo].[Pacientes] p WITH (NOLOCK)
+                          INNER JOIN [dbo].[Personas] a WITH (NOLOCK) on a.IdPersona = p.IdPersona
                           WHERE p.IdPaciente = @id AND p.Estado = 1 AND a.Estado = 1";
 
             return await Get(sql, new { id });

@@ -28,8 +28,8 @@ namespace SysPet.Data
             try
             {
                 var sql = @$"SELECT u.Id,u.Nombre, u.Email,u.Contrasenia,u.Estado, r.Nombre AS Rol
-                            FROM Usuarios u
-                            INNER JOIN Roles r on r.IdRol = u.IdRol";
+                            FROM Usuarios u WITH (NOLOCK)
+                            INNER JOIN Roles r WITH (NOLOCK) on r.IdRol = u.IdRol";
 
                 return await GetItems(sql);
             }
@@ -44,7 +44,7 @@ namespace SysPet.Data
             try
             {
                 var sql = @$"SELECT IdRol,Nombre
-                        FROM [dbo].[Roles]";
+                        FROM [dbo].[Roles] WITH (NOLOCK)";
 
                 return await GetItems(sql);
             }
@@ -57,8 +57,8 @@ namespace SysPet.Data
         public async override Task<UsuariosViewModel> GetItem(int id)
         {
             var sql = @$"SELECT u.Id,u.Nombre, u.Email,u.Contrasenia,u.Estado, r.Nombre AS Rol
-                         FROM Usuarios u
-                         INNER JOIN Roles r on r.IdRol = u.IdRol 
+                         FROM Usuarios u WITH (NOLOCK)
+                         INNER JOIN Roles r WITH (NOLOCK) on r.IdRol = u.IdRol 
                          WHERE u.Id = @id";
             return await Get(sql, new { id });
         }
@@ -68,7 +68,7 @@ namespace SysPet.Data
             try
             {
                 var sql = @$"SELECT Email,Contrasenia,Nombre,Id,IdRol
-                        FROM Usuarios
+                        FROM Usuarios WITH (NOLOCK)
                         WHERE Email = @email AND Contrasenia = @password";
                 var user = await Get(sql, new { email, password });
                 return user;

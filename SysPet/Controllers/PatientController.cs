@@ -130,7 +130,7 @@ namespace SysPet.Controllers
                 var item = data.GetItem(id);
                 if (item == null) { RedirectToAction(nameof(Index)); }
 
-                if (model?.Imagen != null)
+                if (model?.Image != null)
                 {
                     using (var ms = new MemoryStream())
                     {

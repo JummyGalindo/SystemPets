@@ -35,9 +35,9 @@ namespace SysPet.Data
                               ,p.[Imagen]
                               ,p.[TipoContenido]
 	                          ,ps.Nombre + ' ' + ps.ApellidoPaterno + ' ' + ApellidoMaterno AS FullName
-                          FROM [dbo].[Historiales] h
-                          INNER JOIN Pacientes p on p.IdPaciente = h.IdPaciente
-                          INNER JOIN Personas ps on ps.IdPersona = p.IdPersona
+                          FROM [dbo].[Historiales] h WITH (NOLOCK)
+                          INNER JOIN Pacientes p WITH (NOLOCK) on p.IdPaciente = h.IdPaciente
+                          INNER JOIN Personas ps WITH (NOLOCK) on ps.IdPersona = p.IdPersona
                           WHERE p.Estado = 1 AND ps.Estado = 1";
 
                 return await GetItems(sql);
@@ -60,10 +60,10 @@ namespace SysPet.Data
                               ,p.[Imagen]
                               ,p.[TipoContenido]
 	                          ,ps.Nombre + ' ' + ps.ApellidoPaterno + ' ' + ApellidoMaterno AS FullName
-                          FROM [dbo].[Historiales] h
-                          INNER JOIN Pacientes p on p.IdPaciente = h.IdPaciente
-                          INNER JOIN Personas ps on ps.IdPersona = p.IdPersona
-                          INNER JOIN Usuarios u on u.Id = h.IdUser
+                          FROM [dbo].[Historiales] h WITH (NOLOCK)
+                          INNER JOIN Pacientes p WITH (NOLOCK) on p.IdPaciente = h.IdPaciente
+                          INNER JOIN Personas ps WITH (NOLOCK) on ps.IdPersona = p.IdPersona
+                          INNER JOIN Usuarios u WITH (NOLOCK) on u.Id = h.IdUser
                           WHERE p.Estado = 1 AND ps.Estado = 1 AND u.Id = @userId";
 
                 return await GetItems(sql, new { userId });
@@ -84,9 +84,9 @@ namespace SysPet.Data
 	                          ,p.[Imagen]
                               ,p.[TipoContenido]
 	                          ,ps.Nombre + ' ' + ps.ApellidoPaterno + ' ' + ApellidoMaterno AS FullName
-                          FROM [dbo].[Historiales] h
-                          INNER JOIN Pacientes p on p.IdPaciente = h.IdPaciente
-                          INNER JOIN Personas ps on ps.IdPersona = p.IdPersona
+                          FROM [dbo].[Historiales] h WITH (NOLOCK)
+                          INNER JOIN Pacientes p WITH (NOLOCK) on p.IdPaciente = h.IdPaciente
+                          INNER JOIN Personas ps WITH (NOLOCK) on ps.IdPersona = p.IdPersona
                           WHERE h.[Id] = @id AND p.Estado = 1 AND ps.Estado = 1";
 
             return await Get(sql, new { id });

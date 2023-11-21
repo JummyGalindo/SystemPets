@@ -34,7 +34,7 @@ namespace SysPet.Data
                                 CONVERT(date, [FechaIngreso]) AS Fecha,
                                 COUNT(*) AS CantidadRegistros
                             FROM 
-                                [dbo].[Internamientos]
+                                [dbo].[Internamientos] WITH (NOLOCK)
                             GROUP BY 
                                 CONVERT(date, [FechaIngreso])
                             ORDER BY 
@@ -64,14 +64,14 @@ namespace SysPet.Data
                                 a.[TipoContenido],
 	                            I.IdPersona,
 	                            I.IdDoctor
-                            FROM [dbo].[Internamientos] I
-                            INNER JOIN Pacientes a ON a.IdPaciente = I.IdPaciente WHERE a.Estado = 1";
+                            FROM [dbo].[Internamientos] I WITH (NOLOCK)
+                            INNER JOIN Pacientes a WITH (NOLOCK) ON a.IdPaciente = I.IdPaciente WHERE a.Estado = 1";
 
                 var internments =  await GetItems(sql);
                 var persons = new List<InternamientosViewModel>();
                 foreach (var item in internments)
                 {
-                    sql = @$"select IdPersona, Nombre + ' ' + ApellidoPaterno + ' ' + ApellidoMaterno AS FullName from Personas where IdPersona in (@idPersona, @idDoctor)";
+                    sql = @$"select IdPersona, Nombre + ' ' + ApellidoPaterno + ' ' + ApellidoMaterno AS FullName from Personas WITH (NOLOCK) where IdPersona in (@idPersona, @idDoctor)";
 
                     var result = await GetItems(sql, new { idPersona = item.IdPersona, idDoctor = item.IdDoctor });
                     foreach (var person in result)
@@ -113,15 +113,15 @@ namespace SysPet.Data
                                 a.[TipoContenido],
 	                            I.IdPersona,
 	                            I.IdDoctor
-                            FROM [dbo].[Internamientos] I
-                            INNER JOIN Pacientes a ON a.IdPaciente = I.IdPaciente 
-                            INNER JOIN Usuarios u on u.Id = I.IdUser AND u.Estado = 1 WHERE a.Estado = 1";
+                            FROM [dbo].[Internamientos] I WITH (NOLOCK)
+                            INNER JOIN Pacientes a WITH (NOLOCK) ON a.IdPaciente = I.IdPaciente 
+                            INNER JOIN Usuarios u WITH (NOLOCK) on u.Id = I.IdUser AND u.Estado = 1 WHERE a.Estado = 1";
 
                 var internments = await GetItems(sql, new { userId });
                 var persons = new List<InternamientosViewModel>();
                 foreach (var item in internments)
                 {
-                    sql = @$"select IdPersona, Nombre + ' ' + ApellidoPaterno + ' ' + ApellidoMaterno AS FullName from Personas where IdPersona in (@idPersona, @idDoctor)";
+                    sql = @$"select IdPersona, Nombre + ' ' + ApellidoPaterno + ' ' + ApellidoMaterno AS FullName from Personas WITH (NOLOCK) where IdPersona in (@idPersona, @idDoctor)";
 
                     var result = await GetItems(sql, new { idPersona = item.IdPersona, idDoctor = item.IdDoctor });
                     foreach (var person in result)
@@ -161,15 +161,15 @@ namespace SysPet.Data
                                 a.[TipoContenido],
 	                            I.IdPersona,
 	                            I.IdDoctor
-                            FROM [dbo].[Internamientos] I
-                            INNER JOIN Pacientes a ON a.IdPaciente = I.IdPaciente
+                            FROM [dbo].[Internamientos] I WITH (NOLOCK)
+                            INNER JOIN Pacientes a WITH (NOLOCK) ON a.IdPaciente = I.IdPaciente
                             WHERE I.Id = @id AND a.Estado = 1";
 
             var internments = await GetItems(sql, new { id });
             var persons = new List<InternamientosViewModel>();
             foreach (var item in internments ?? new List<InternamientosViewModel>())
             {
-                sql = @$"select IdPersona, Nombre + ' ' + ApellidoPaterno + ' ' + ApellidoMaterno AS FullName from Personas where IdPersona in (@idPersona, @idDoctor)";
+                sql = @$"select IdPersona, Nombre + ' ' + ApellidoPaterno + ' ' + ApellidoMaterno AS FullName from Personas WITH (NOLOCK) where IdPersona in (@idPersona, @idDoctor)";
 
                 var result = await GetItems(sql, new { idPersona = item.IdPersona, idDoctor = item.IdDoctor });
                 foreach (var person in result)

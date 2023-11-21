@@ -29,9 +29,9 @@ namespace SysPet.Data
             try
             {
                 var sql = @$"SELECT c.[Id],c.[FechaCita],c.[Motivo],p.[Nombre],p.[ApellidoPaterno],p.[ApellidoMaterno], e.[Nombre] Estado
-                              FROM [dbo].[Citas] c
-                              INNER JOIN [dbo].[Personas] p on p.IdPersona = c.IdPersona
-                              INNER JOIN [dbo].[EstadoCitas] e on e.Id = c.IdEstado AND p.Estado = 1";
+                              FROM [dbo].[Citas] c WITH (NOLOCK)
+                              INNER JOIN [dbo].[Personas] p WITH (NOLOCK) on p.IdPersona = c.IdPersona
+                              INNER JOIN [dbo].[EstadoCitas] e WITH (NOLOCK) on e.Id = c.IdEstado AND p.Estado = 1";
 
                 return await GetItems(sql);
             }
@@ -46,10 +46,10 @@ namespace SysPet.Data
             try
             {
                 var sql = @$"SELECT c.[Id],c.[FechaCita],c.[Motivo],p.[Nombre],p.[ApellidoPaterno],p.[ApellidoMaterno], e.[Nombre] Estado
-                              FROM [dbo].[Citas] c
-                              INNER JOIN [dbo].[Personas] p on p.IdPersona = c.IdPersona
-                              INNER JOIN [dbo].[EstadoCitas] e on e.Id = c.IdEstado AND p.Estado = 1
-                              INNER JOIN [dbo].[Usuarios] a on a.Id = c.IdUser AND a.Estado = 1
+                              FROM [dbo].[Citas] c WITH (NOLOCK)
+                              INNER JOIN [dbo].[Personas] p WITH (NOLOCK) on p.IdPersona = c.IdPersona
+                              INNER JOIN [dbo].[EstadoCitas] e WITH (NOLOCK) on e.Id = c.IdEstado AND p.Estado = 1
+                              INNER JOIN [dbo].[Usuarios] a WITH (NOLOCK) on a.Id = c.IdUser AND a.Estado = 1
                               WHERE a.Id = @userId";
 
                 return await GetItems(sql, new { userId });
@@ -67,8 +67,8 @@ namespace SysPet.Data
                 var sql = @$"SELECT CONVERT(date, c.[FechaCita]) AS Fecha
                                   ,e.[Nombre]
 	                              ,COUNT(*) AS CantidadRegistros
-                              FROM [dbo].[Citas] c
-                              INNER JOIN [dbo].[EstadoCitas] e on e.Id = c.IdEstado
+                              FROM [dbo].[Citas] c WITH (NOLOCK)
+                              INNER JOIN [dbo].[EstadoCitas] e WITH (NOLOCK) on e.Id = c.IdEstado
                               GROUP BY  CONVERT(date, c.[FechaCita]), e.Nombre
                             ORDER BY Fecha;";
 
@@ -84,7 +84,7 @@ namespace SysPet.Data
         {
             try
             {
-                var sql = @$"SELECT [Id],[Nombre] FROM [dbo].[EstadoCitas]";
+                var sql = @$"SELECT [Id],[Nombre] FROM [dbo].[EstadoCitas] WITH (NOLOCK)";
 
                 return await GetItems(sql);
             }
@@ -97,10 +97,10 @@ namespace SysPet.Data
         public async override Task<CitasViewModel> GetItem(int id)
         {
             var sql = @$"SELECT c.[Id],c.[FechaCita],c.[Motivo],p.[Nombre],p.[ApellidoPaterno],p.[ApellidoMaterno], e.[Nombre] Estado
-                          FROM [dbo].[Citas] c
-                          INNER JOIN [dbo].[Personas] p on p.IdPersona = c.IdPersona
-                          INNER JOIN [dbo].[EstadoCitas] e on e.Id = c.IdEstado
-                          INNER JOIN [dbo].[Usuarios] a on a.Id = c.IdUser 
+                          FROM [dbo].[Citas] c WITH (NOLOCK)
+                          INNER JOIN [dbo].[Personas] p WITH (NOLOCK) on p.IdPersona = c.IdPersona
+                          INNER JOIN [dbo].[EstadoCitas] e WITH (NOLOCK) on e.Id = c.IdEstado
+                          INNER JOIN [dbo].[Usuarios] a WITH (NOLOCK) on a.Id = c.IdUser 
                           WHERE c.Id = @id AND p.Estado = 1 AND a.Estado = 1";
 
             return await Get(sql, new { id });

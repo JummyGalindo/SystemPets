@@ -16,7 +16,7 @@ namespace SysPet.Data
             {
                 var sql = @$"SELECT [IdProducto],[Nombre],[FechaIngreso],[Proveedor],[Cantidad],[Stock],[PrecioUnitario],
                                     [PrecioSugerido],[Descripcion],[FechaVencimiento],[Estado],[Imagen], [TipoContenido]
-                            FROM [dbo].[Productos] WHERE Estado = 1";
+                            FROM [dbo].[Productos] WITH (NOLOCK) WHERE Estado = 1";
 
                 return await GetItems(sql);
             }
@@ -34,7 +34,7 @@ namespace SysPet.Data
                 var sql = @$"SELECT [Stock]
                                   ,[FechaVencimiento]
                                   ,[Nombre]
-                            FROM [Pets].[dbo].[Productos]
+                            FROM [dbo].[Productos] WITH (NOLOCK)
                             WHERE [FechaVencimiento] BETWEEN GETDATE() AND DATEADD(day, 30, GETDATE()) AND Stock > 0;";
 
                 return await GetItems(sql);
@@ -53,7 +53,7 @@ namespace SysPet.Data
                 var sql = @$"SELECT [Stock]
                                   ,[FechaVencimiento]
                                   ,[Nombre]
-                             FROM [Pets].[dbo].[Productos]
+                             FROM [dbo].[Productos] WITH (NOLOCK)
                              WHERE Stock > 0 AND Stock < 5;";
 
                 return await GetItems(sql);
@@ -68,7 +68,7 @@ namespace SysPet.Data
         public override async Task<ProductosViewModel> GetItem(int idProducto)
         {
             var sql = @$"SELECT [IdProducto],[Nombre],[FechaIngreso],[Proveedor],[Cantidad],[Stock],[PrecioUnitario],[PrecioSugerido],[Descripcion],[FechaVencimiento],
-                                [Estado],[Imagen], [TipoContenido]  FROM [dbo].[Productos] WHERE idProducto = @idProducto AND Estado = 1";
+                                [Estado],[Imagen], [TipoContenido]  FROM [dbo].[Productos] WITH (NOLOCK) WHERE idProducto = @idProducto AND Estado = 1";
 
             return await Get(sql, new { idProducto });
         }

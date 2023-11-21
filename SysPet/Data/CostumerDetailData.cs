@@ -43,8 +43,8 @@ namespace SysPet.Data
 	                          ,pa.[Sexo]
 	                          ,pa.Imagen
                               ,pa.TipoContenido
-                          FROM [dbo].[Personas] p
-                          INNER JOIN [dbo].[Pacientes] pa on pa.IdPersona = p.IdPersona
+                          FROM [dbo].[Personas] p WITH (NOLOCK)
+                          INNER JOIN [dbo].[Pacientes] pa WITH (NOLOCK) on pa.IdPersona = p.IdPersona
                           WHERE p.IdTipoPersona = 2 AND p.IdPersona = @id AND p.Estado = 1 AND pa.Estado = 1";
 
                 var personsWithPatiens =  await GetItems(sql, new { id });
@@ -92,9 +92,9 @@ namespace SysPet.Data
 	                          ,c.[FechaCita]
 	                          ,c.[Motivo]
 	                          ,ec.[Nombre] EstadoCita
-                          FROM [dbo].[Personas] p
-                          INNER JOIN [dbo].[Citas] c on c.IdPersona = p.IdPersona
-                          INNER JOIN [dbo].[EstadoCitas] ec on ec.Id = c.IdEstado
+                          FROM [dbo].[Personas] p WITH (NOLOCK)
+                          INNER JOIN [dbo].[Citas] c WITH (NOLOCK) on c.IdPersona = p.IdPersona
+                          INNER JOIN [dbo].[EstadoCitas] ec WITH (NOLOCK) on ec.Id = c.IdEstado
                           WHERE p.IdTipoPersona = 2 AND p.IdPersona = @id AND p.Estado = 1";
 
                 var personsWithAppointments = await GetItems(query, new { id });

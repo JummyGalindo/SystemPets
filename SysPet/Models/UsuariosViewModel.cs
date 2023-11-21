@@ -41,8 +41,9 @@ namespace SysPet.Models
         public string ContraseniaEnmascarada
         {
             get
+
             {
-                return new string('*', Contrasenia.Length);
+                return !string.IsNullOrEmpty(Contrasenia) ? new string('*', Contrasenia.Length): "";
             }
         }
     }

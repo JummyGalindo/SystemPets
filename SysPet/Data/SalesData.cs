@@ -43,9 +43,9 @@ namespace SysPet.Data
                               ,d.[Total] TotalItem
 	                          ,p.Nombre Articulo
                               ,p.[Imagen], p.[TipoContenido]
-                          FROM [dbo].[Ventas] v
-                          INNER JOIN [dbo].[DetalleVenta] d on d.IdVenta = v.Id
-                          INNER JOIN [dbo].[Productos] p on p.IdProducto = d.IdProducto";
+                          FROM [dbo].[Ventas] v WITH (NOLOCK)
+                          INNER JOIN [dbo].[DetalleVenta] d WITH (NOLOCK) on d.IdVenta = v.Id
+                          INNER JOIN [dbo].[Productos] p WITH (NOLOCK) on p.IdProducto = d.IdProducto";
 
                 return await GetItems(sql);
             }
@@ -69,10 +69,10 @@ namespace SysPet.Data
                               ,d.[Total] TotalItem
 	                          ,p.Nombre Articulo
                               ,p.[Imagen], p.[TipoContenido]
-                          FROM [dbo].[Ventas] v
-                          INNER JOIN [dbo].[DetalleVenta] d on d.IdVenta = v.Id
-                          INNER JOIN [dbo].[Productos] p on p.IdProducto = d.IdProducto
-                          INNER JOIN [dbo].[Usuarios] u on u.Id = v.IdUser AND u.Estado = 1";
+                          FROM [dbo].[Ventas] v WITH (NOLOCK)
+                          INNER JOIN [dbo].[DetalleVenta] d WITH (NOLOCK) on d.IdVenta = v.Id
+                          INNER JOIN [dbo].[Productos] p WITH (NOLOCK) on p.IdProducto = d.IdProducto
+                          INNER JOIN [dbo].[Usuarios] u WITH (NOLOCK) on u.Id = v.IdUser AND u.Estado = 1";
 
                 return await GetItems(sql);
             }
@@ -88,7 +88,7 @@ namespace SysPet.Data
             {
                 var sql = @$"SELECT [FechaVenta]
 	                              ,Sum(CantidadArticulos) AS Cantidad
-                            FROM [dbo].[Ventas]
+                            FROM [dbo].[Ventas] WITH (NOLOCK)
                             GROUP BY FechaVenta
                             ORDER BY FechaVenta";
 
@@ -107,8 +107,8 @@ namespace SysPet.Data
                 var sql = @$"SELECT TOP(4) d.[Cantidad]
 	                              ,p.Nombre AS Articulo
 	                              ,SUM(d.Cantidad) AS ToTal
-                              FROM [dbo].[DetalleVenta] d
-                              INNER JOIN [dbo].[Productos] p ON d.IdProducto = p.IdProducto
+                              FROM [dbo].[DetalleVenta] d WITH (NOLOCK)
+                              INNER JOIN [dbo].[Productos] p WITH (NOLOCK) ON d.IdProducto = p.IdProducto
                               GROUP BY d.Cantidad, p.Nombre
                               ORDER BY Total DESC";
 
@@ -130,7 +130,7 @@ namespace SysPet.Data
                                 DATENAME(MONTH, [FechaVenta]) AS Mes,
                                 SUM([Total]) AS TotalVentas
                             FROM 
-                                [dbo].[Ventas]
+                                [dbo].[Ventas] WITH (NOLOCK)
                             WHERE 
                                 [FechaVenta] >= DATEADD(MONTH, -7, GETDATE())
                             GROUP BY 
@@ -159,9 +159,9 @@ namespace SysPet.Data
                               ,d.[Total]
 	                          ,p.Nombre Articulo
                               ,p.[Imagen], p.[TipoContenido]
-                          FROM [dbo].[Ventas] v
-                          INNER JOIN [dbo].[DetalleVenta] d on d.IdVenta = v.Id
-                          INNER JOIN [dbo].[Productos] p on p.IdProducto = d.IdProducto
+                          FROM [dbo].[Ventas] v WITH (NOLOCK)
+                          INNER JOIN [dbo].[DetalleVenta] d WITH (NOLOCK) on d.IdVenta = v.Id
+                          INNER JOIN [dbo].[Productos] p WITH (NOLOCK) on p.IdProducto = d.IdProducto
                           WHERE v.[Id] = @id";
 
             return await Get(sql, new { id });

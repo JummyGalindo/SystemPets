@@ -146,7 +146,6 @@ namespace SysPet.Controllers
         // GET: AppointmentController/Edit/5
         public async Task<ActionResult> Edit(int id)
         {
-            var appointment = await data.GetItem(id);
             var states = await data.GetStates();
             var list = states.Select(x => new SelectListItem
             {
@@ -154,6 +153,16 @@ namespace SysPet.Controllers
                 Text = x.Nombre
             }).ToList();
 
+            var appointment = await data.GetItem(id);
+            if (appointment == null)
+            {
+                ModelState.AddModelError("", $"La Cita No. {id} no existe o no esta asignada a un usuario");
+                appointment = new CitasViewModel();
+                appointment.EstadoCitas = list;
+
+                return View(appointment);
+            }
+            
             appointment.EstadoCitas = list;
             return View(appointment);
         }
@@ -166,9 +175,6 @@ namespace SysPet.Controllers
             try
             {
                 id = id > 0 ? id : model.Id;
-                var item = data.GetItem(id);
-                if (item == null) { RedirectToAction(nameof(Index)); }
-
                 var result = data.Update(model, id);
 
                 return RedirectToAction(nameof(Index));

@@ -34,8 +34,8 @@ namespace SysPet.Data
                               ,i.[Estado]
                               ,p.[Nombre] Producto
 	                          ,p.[Descripcion]
-                          FROM [dbo].[Inventarios] i
-                          INNER JOIN [dbo].[Productos] p on i.IdProducto = p.IdProducto";
+                          FROM [dbo].[Inventarios] i WITH (NOLOCK)
+                          INNER JOIN [dbo].[Productos] p WITH (NOLOCK) on i.IdProducto = p.IdProducto";
 
                 return await GetItems(sql);
             }
@@ -54,8 +54,8 @@ namespace SysPet.Data
                               ,i.[Estado]
                               ,p.[Nombre] Producto
 	                          ,p.[Descripcion]
-                          FROM [dbo].[Inventarios] i
-                          INNER JOIN [dbo].[Productos] p on i.IdProducto = p.IdProducto
+                          FROM [dbo].[Inventarios] i WITH (NOLOCK)
+                          INNER JOIN [dbo].[Productos] p WITH (NOLOCK) on i.IdProducto = p.IdProducto
                           WHERE [Id] = @id";
 
             return await Get(sql, new { id });

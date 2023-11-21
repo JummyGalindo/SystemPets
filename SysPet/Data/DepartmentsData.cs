@@ -31,7 +31,7 @@ namespace SysPet.Data
                               ,[Descripcion]
                               ,[Estado]
                               ,[Fecha]
-                          FROM [dbo].[Departamentos]";
+                          FROM [dbo].[Departamentos] WITH (NOLOCK)";
 
                 return await GetItems(sql);
             }
@@ -48,7 +48,7 @@ namespace SysPet.Data
                               ,[Descripcion]
                               ,[Estado]
                               ,[Fecha]
-                          FROM [Pets].[dbo].[Departamentos]
+                          FROM [Pets].[dbo].[Departamentos] WITH (NOLOCK)
                           WHERE [IdDepartamento] = @id";
 
             return await Get(sql, new { id });
