@@ -101,21 +101,15 @@ namespace SysPet.Data
             {
                 using var connection = new SqlConnection(connectionString);
                 connection.Open();
-                using var transaction = connection.BeginTransaction();
                 try
                 {
-                    result = connection.Execute(sql, transaction);
-                    transaction.Commit();
+                    result = connection.Execute(sql);
                     break;
                 }
                 catch (SqlException ex) when (ex.Number == 1205) // Número de error para deadlock
                 {
                     intentos--;
                     Thread.Sleep(1000);
-                }
-                catch (System.Exception ex)
-                {
-                    transaction.Rollback();
                 }
             }
 
@@ -136,21 +130,15 @@ namespace SysPet.Data
             {
                 using var connection = new SqlConnection(connectionString);
                 connection.Open();
-                using var transaction = connection.BeginTransaction();
                 try
                 {
-                    result = connection.Query<int>(sql, transaction).Single(); ;
-                    transaction.Commit();
+                    result = connection.Query<int>(sql).Single();
                     break;
                 }
                 catch (SqlException ex) when (ex.Number == 1205) // Número de error para deadlock
                 {
                     intentos--;
                     Thread.Sleep(1000);
-                }
-                catch (System.Exception ex)
-                {
-                    transaction.Rollback();
                 }
             }
 
@@ -171,21 +159,15 @@ namespace SysPet.Data
             {
                 using var connection = new SqlConnection(connectionString);
                 connection.Open();
-                using var transaction = connection.BeginTransaction();
                 try
                 {
-                    result = connection.Execute(sql, param, transaction);
-                    transaction.Commit();
+                    result = connection.Execute(sql, param);
                     break;
                 }
                 catch (SqlException ex) when (ex.Number == 1205) // Número de error para deadlock
                 {
                     intentos--;
                     Thread.Sleep(1000);
-                }
-                catch (System.Exception ex)
-                {
-                    transaction.Rollback();
                 }
             }
 

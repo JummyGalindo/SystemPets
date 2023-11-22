@@ -27,6 +27,23 @@ namespace SysPet.Data
             
         }
 
+        public async Task<IEnumerable<ProductosViewModel>> GetAllProductsToShow()
+        {
+            try
+            {
+                var sql = @$"SELECT [IdProducto],[Nombre],[FechaIngreso],[Proveedor],[Cantidad],[Stock],[PrecioUnitario],
+                                    [PrecioSugerido],[Descripcion],[FechaVencimiento],[Estado],[Imagen], [TipoContenido]
+                            FROM [dbo].[Productos] WITH (NOLOCK) WHERE Estado = 1 AND Stock > 0";
+
+                return await GetItems(sql);
+            }
+            catch
+            {
+                return new List<ProductosViewModel>();
+            }
+
+        }
+
         public async Task<IEnumerable<ProductosViewModel>> GetExpiredProducts()
         {
             try

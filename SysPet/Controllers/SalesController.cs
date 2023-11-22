@@ -239,7 +239,7 @@ namespace SysPet.Controllers
         public async Task<ActionResult> Create()
         {
             var model = new SalesViewModel();
-            var products = await productsData.GetAll();
+            var products = await productsData.GetAllProductsToShow();
             model.ListaProductos = products.ToList();
             model.Productos = products.Select(x => new SelectListItem
             {

@@ -8,6 +8,10 @@ function updateRows(select) {
     var cantidadIn = fila.querySelector('#Cantidad');
     var dropDown = fila.querySelector('#productos');
 
+    if (cantidadIn.value === '') {
+        cantidadIn.value = 1;
+    }
+
     var cantidad = parseFloat(cantidadIn.value);
 
     if (!cantidad) {
