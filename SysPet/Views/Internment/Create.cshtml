@@ -23,7 +23,8 @@
                     <div class="d-g">
                         <div class="form-outline mb-4">
                             <label asp-for="FechaIngreso" class="control-label col-md-6"></label>
-                            <input asp-for="FechaIngreso" class="form-control form-control-lg" />
+                            <input asp-for="FechaIngreso" class="form-control form-control-lg" min="@DateTime.Now.AddMonths(-2).ToString("yyyy-MM-ddTHH:mm")" onfocus="(this.type='datetime-local')" />
+
                             <span asp-validation-for="FechaIngreso" class="text-danger"></span>
                         </div>
                         <div class="form-outline mb-4">

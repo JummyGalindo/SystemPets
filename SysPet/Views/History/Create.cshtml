@@ -16,7 +16,7 @@
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
                         <label asp-for="FechaVisita" class="control-label col-md-6"></label>
-                        <input asp-for="FechaVisita" class="form-control form-control-lg" />
+                        <input asp-for="FechaVisita" class="form-control form-control-lg" min="@DateTime.Now.AddMonths(-2).ToString("yyyy-MM-ddTHH:mm")" onfocus="(this.type='datetime-local')" />
                         <span asp-validation-for="FechaVisita" class="text-danger"></span>
                     </div>
                     <div class="form-group">

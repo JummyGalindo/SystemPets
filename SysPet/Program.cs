@@ -23,19 +23,6 @@ builder.Services.AddScoped<ToastrService>();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserIdProvider, SessionUserIdProvider>();
-//builder.Services.AddScoped(provider =>
-//{
-//    return new RoleAuthorizationFilter("Administrador");
-//});
-
-//builder.Services.AddAuthorization(options =>
-//{
-//    options.AddPolicy("AdminPolicy", policy =>
-//    {
-//        policy.RequireRole("Administrador");
-//    });
-
-//});
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
@@ -55,16 +42,13 @@ builder.Services.AddDistributedMemoryCache();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
     app.UseStatusCodePagesWithReExecute("/Shared/CustomError/{0}");
 }
 
-//app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSession();
 app.UseRouting();

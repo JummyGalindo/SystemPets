@@ -16,7 +16,7 @@
             <div class="table-head-sales mb-5">
                 <div class="form-group">
                     <label asp-for="FechaVenta" class="control-label"></label>
-                    <input asp-for="FechaVenta" class="form-control"/>
+                    <input asp-for="FechaVenta" class="form-control" min="@DateTime.Now.AddMonths(-2).ToString("yyyy-MM-ddTHH:mm")" onfocus="(this.type='datetime-local')"/>
                     <span asp-validation-for="FechaVenta" class="text-danger"></span>
                 </div>
                 <div class="form-group">

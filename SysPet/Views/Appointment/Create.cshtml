@@ -19,7 +19,7 @@
                         @* Otro modelo de fecha diferente al de bootstrp con flatpickr *@
 
                         @* @Html.EditorFor(model => model.FechaCita, new { htmlAttributes = new { @class = "form-control-lg", type = "datetime", id = "date", placeholder = "Selecciona la fecha y hora" } }) *@
-                        <input asp-for="FechaCita" class="form-control form-control-lg" />
+                        <input asp-for="FechaCita" class="form-control form-control-lg" min="@DateTime.Now.AddMonths(-2).ToString("yyyy-MM-ddTHH:mm")" onfocus="(this.type='datetime-local')" />
                         <span asp-validation-for="FechaCita" class="text-danger"></span>
                     </div>
                     <div class="form-outline mb-4">
