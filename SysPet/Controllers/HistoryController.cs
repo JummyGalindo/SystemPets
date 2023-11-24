@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Rotativa.AspNetCore;
 using SysPet.Data;
 using SysPet.Exception;
 using SysPet.Models;
@@ -46,6 +47,37 @@ namespace SysPet.Controllers
 
                 return View(result);
 
+            }
+            catch (System.Exception)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+        }
+
+        public async Task<IActionResult> DownloadIndexPdf()
+        {
+            try
+            {
+                var items = await data.GetAll();
+
+                var result = items.OrderByDescending(x => x.FechaVisita).Select(x => new HistoryViewModel
+                {
+                    Id = x.Id.ToString(),
+                    FechaVisita = x.FechaVisita.ToString("dd/MM/yyyy"),
+                    Paciente = x.Paciente,
+                    Motivo = x.Motivo,
+
+                }).Take(30).ToList();
+
+                string pdfName = $"Historiales_{DateTime.Now.ToString("ddMMyyyyHHmmss")}.pdf";
+
+
+                return new ViewAsPdf("DownloadIndexPdf", result)
+                {
+                    FileName = pdfName,
+                    PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
+                    PageSize = Rotativa.AspNetCore.Options.Size.A4
+                };
             }
             catch (System.Exception)
             {

@@ -84,7 +84,7 @@ namespace SysPet.Data
         {
             var sql = $@"UPDATE Usuarios SET 
                         Nombre='{item.Nombre}', 
-                        Apellidos='{item.Contrasenia}', 
+                        Contrasenia='{item.Contrasenia}', 
                         Estado={GetEstado(item.Estado)}
                         WHERE Id = @id";
 

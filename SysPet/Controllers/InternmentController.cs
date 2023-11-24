@@ -104,18 +104,18 @@ namespace SysPet.Controllers
             {
                 var items = await data.GetAll();
 
-                var result = items.Select(x => new InternmentViewModel
+                var result = items.OrderByDescending(x => x.FechaIngreso).Select(x => new InternmentViewModel
                 {
                     Id = x.Id.ToString(),
                     Antecedentes = x.Antecedentes,
                     Atendio = x.Atendio,
-                    Fecha = x.FechaIngreso.ToString("dd/mm/yyyy"),
+                    Fecha = x.FechaIngreso.ToString("dd/MM/yyyy"),
                     Medicamento = x.Medicamento,
                     Paciente = x.Paciente,
                     Propietario = x.Propietario,
                     Tratamiento = x.Tratamiento,
 
-                }).ToList();
+                }).Take(30).ToList();
 
                 string pdfName = $"Internamientos_{DateTime.Now.ToString("ddMMyyyyHHmmss")}.pdf";
 

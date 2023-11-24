@@ -9,7 +9,7 @@ namespace SysPet.Data
 
         public Repository()
         {
-            connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Pets;Integrated Security=True;Connect Timeout=30;Encrypt=False;";
+            connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Pets;Integrated Security=True;Connect Timeout=30;Encrypt=False;MultipleActiveResultSets=True;";
         }
 
         public void GuardarDatosConReintentoAutomatico()
