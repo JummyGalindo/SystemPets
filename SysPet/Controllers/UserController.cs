@@ -7,6 +7,7 @@ using SysPet.Exception;
 using SysPet.Models;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using System.Reflection;
 
 namespace SysPet.Controllers
 {
@@ -14,11 +15,12 @@ namespace SysPet.Controllers
 
     public class UserController : Controller
     {
-
+        private readonly ILogger<HomeController> _logger;
         private readonly UsersData _usersData;
-        public UserController()
+        public UserController(ILogger<HomeController> logger)
         {
             _usersData = new UsersData();
+            _logger = logger;
         }
 
         [HttpGet]
@@ -69,46 +71,54 @@ namespace SysPet.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> LogIn(UsuariosViewModel model)
         {
-            if (model == null || string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Contrasenia))
+            try
             {
-                ModelState.AddModelError(string.Empty, "Nombre de usuario o contraseña incorrectos.");
-                return View(model);
-            }
-            else
-            {
-                var user = await _usersData.GetUserManager(model.Email, model.Contrasenia);
-                if (user == null || model.Email != user.Email || model.Contrasenia != user.Contrasenia)
+                if (model == null || string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Contrasenia))
                 {
-                    ModelState.AddModelError("", "Nombre de usuario o contraseña incorrectos.");
+                    ModelState.AddModelError(string.Empty, "Nombre de usuario o contraseña incorrectos.");
                     return View(model);
                 }
+                else
+                {
+                    var user = await _usersData.GetUserManager(model.Email, model.Contrasenia);
+                    if (user == null || model.Email != user.Email || model.Contrasenia != user.Contrasenia)
+                    {
+                        ModelState.AddModelError("", "Nombre de usuario o contraseña incorrectos.");
+                        return View(model);
+                    }
 
-                var rol = user.IdRol == 1 ? "Administrador" : "Usuario";
+                    var rol = user.IdRol == 1 ? "Administrador" : "Usuario";
 
-                var claims = new List<Claim>
+                    var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, user.Nombre), // Nombre de usuario
                     new Claim(ClaimTypes.Role, rol), // Rol del usuario
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
                 };
 
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var authProperties = new AuthenticationProperties
-                {
-                    IsPersistent = false,
-                    ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(5),
-                    AllowRefresh = false,
-                };
+                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    var authProperties = new AuthenticationProperties
+                    {
+                        IsPersistent = false,
+                        ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(5),
+                        AllowRefresh = false,
+                    };
 
-                await HttpContext.SignInAsync(
-                        CookieAuthenticationDefaults.AuthenticationScheme,
-                        new ClaimsPrincipal(claimsIdentity),
-                        authProperties);
+                    await HttpContext.SignInAsync(
+                            CookieAuthenticationDefaults.AuthenticationScheme,
+                            new ClaimsPrincipal(claimsIdentity),
+                            authProperties);
 
-                HttpContext.Session.SetString("User", user.Nombre);
-                HttpContext.Session.SetInt32("UserId", user.Id);
+                    HttpContext.Session.SetString("User", user.Nombre);
+                    HttpContext.Session.SetInt32("UserId", user.Id);
 
-                return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            catch (System.Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw new System.Exception(ex.Message, ex);
             }
         }
 
@@ -187,9 +197,8 @@ namespace SysPet.Controllers
         {
             try
             {
-                if (model.Contrasenia != model.ConfirmPassword)
+                if (!ModelState.IsValid)
                 {
-                    ModelState.AddModelError(string.Empty, "Las contraseñas no coinciden");
                     return View(model);
                 }
 
@@ -210,6 +219,16 @@ namespace SysPet.Controllers
         public async Task<ActionResult> Edit(int id)
         {
             var user = await _usersData.GetItem(id);
+
+            var roles = await _usersData.GetRoles();
+            var listRoles = roles.Select(x => new SelectListItem
+            {
+                Value = x.IdRol.ToString(),
+                Text = x.Nombre
+            }).ToList();
+
+            user.Roles = listRoles;
+
             return View(user);
         }
 
@@ -222,8 +241,8 @@ namespace SysPet.Controllers
             try
             {
                 id = id > 0 ? id : model.Id;
-                var product = await _usersData.GetItem(id);
-                if (product == null) { RedirectToAction(nameof(Index)); }
+                var user = await _usersData.GetItem(id);
+                if (user == null) { return RedirectToAction(nameof(Index)); }
 
                 var result = _usersData.Update(model, id);
 
@@ -236,21 +255,10 @@ namespace SysPet.Controllers
         }
 
         // GET: UserController/Delete/5
-        public async Task<ActionResult> Delete(int id)
-        {
-            var user = await _usersData.GetItem(id);
-            return View(user);
-        }
-
-        // POST: UserController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrador")]
-        public ActionResult Delete(int id, UsuariosViewModel model)
+        public ActionResult Delete(int id)
         {
             try
             {
-                if (model == null) { RedirectToAction(nameof(Index)); }
                 var result = _usersData.Delete(id);
                 return RedirectToAction(nameof(Index));
             }

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using MessagePack;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using SysPet.Helpers;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -31,12 +33,11 @@ namespace SysPet.Models
         public string ConfirmPassword { get; set; }
         public int IdPersona { get; set; }
         public int IdRol { get; set; }
-        public string Rol { get; set; }
+        public string Rol { get; set; } = string.Empty;
         public bool Estado { get; set; }
         [DisplayName("Estado")]
         public string State { get { return Estado ? "Activo" : "Inactivo"; } }
-        public PersonasViewModel Persona { get; set; }
-        public List<SelectListItem> Roles { get; set; }
+        public List<SelectListItem> Roles { get; set; } = new List<SelectListItem>();
 
         public string ContraseniaEnmascarada
         {

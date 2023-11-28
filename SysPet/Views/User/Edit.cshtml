@@ -12,35 +12,40 @@
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">Editar Usuario</h4>
-                <form asp-action="Edit">
+                <form asp-action="Edit" method="post">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-outline mb-4" style="display: none;">
 
                         <label asp-for="Id" class="control-label col-md-6"></label>
                         <input asp-for="Id" class="form-control" />
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mb-4">
                         <label asp-for="Nombre" class="control-label"></label>
                         <input asp-for="Nombre" class="form-control" />
                         <span asp-validation-for="Nombre" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mb-4">
                         <label asp-for="Email" class="control-label"></label>
                         <input asp-for="Email" class="form-control" />
                         <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mb-4">
                         <label asp-for="Contrasenia" class="control-label"></label>
                         <input asp-for="Contrasenia" class="form-control" />
                         <span asp-validation-for="Contrasenia" class="text-danger"></span>
                     </div>
-                    <div class="form-outline mb-4 form-check form-switch">
+                    <div class="form-outline mb-4">
+                        @Html.LabelFor(model => model.IdRol, "Rol", new { @class = "control-label col-md-6 col-md-6" })
+                        @Html.DropDownListFor(model => model.IdRol, Model.Roles, "Seleccionar un rol", new { @class = "form-control form-control-lg form-control form-control-lg-lg" })
+                        @Html.ValidationMessageFor(model => model.IdRol)
+                    </div>
+                    <div class="form-outline mb-4 form-check form-switch" style="padding-left: 0;">
                         <label class="toggle-switch toggle-switch-success">
                             <input asp-for="Estado" /> @Html.DisplayNameFor(model => model.Estado)
                             <span class="toggle-slider round"></span>
                         </label>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="display: flex;justify-content: flex-end;gap: 24px;">
                         <button type="submit" class="btn btn-outline-success btn-lg btn-block btn-custom-color-success btn-custom-f">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-floppy" viewBox="0 0 16 16">
                                 <path d="M11 2H9v3h2V2Z" />
